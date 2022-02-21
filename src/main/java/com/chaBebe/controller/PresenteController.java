@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,7 @@ public class PresenteController {
 	@Autowired
 	private PresenteService service;
 
+	@Cacheable(value = "listaPresentes")
 	@GetMapping
 	public ResponseEntity<List<Presente>> findAll(){	
 		
@@ -37,6 +40,7 @@ public class PresenteController {
 	}
 	
 	@PostMapping
+	@CacheEvict(value = "listaPresentes", allEntries = true)
 	public ResponseEntity<Presente> create(@RequestBody Presente presente) {
 		URI uri = ServletUriComponentsBuilder
 				.fromCurrentRequest().path(ID).buildAndExpand(service.create(presente)).toUri();
